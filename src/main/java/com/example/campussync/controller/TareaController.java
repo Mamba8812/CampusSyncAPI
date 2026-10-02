@@ -18,11 +18,12 @@ import com.example.campussync.repository.TareaRepository;
 @RequestMapping("/api/tareas")
 public class TareaController {
 
-private final TareaRepository tareaRepository;
+    private final TareaRepository tareaRepository;
 
-public TareaController(TareaRepository tareaRepository) {
-    this.tareaRepository = tareaRepository;
-}
+    // Constructor para inyectar el repositorio de tareas
+    public TareaController(TareaRepository tareaRepository) {
+        this.tareaRepository = tareaRepository;
+    }
 
     // --- 1. ENDPOINT PARA CREAR UNA TAREA (POST) ---
     @PostMapping
@@ -54,7 +55,7 @@ public TareaController(TareaRepository tareaRepository) {
                 
                 Tarea tareaExistente = tareaRepository.findById(id).get();
 
-                // Actualizamos los campos de la tarea
+                // Actualizamos los campos de texto de la tarea
                 tareaExistente.setTitulo(detallesTarea.getTitulo());
                 tareaExistente.setDescripcion(detallesTarea.getDescripcion());
                 tareaExistente.setFechaVencimiento(detallesTarea.getFechaVencimiento());
@@ -86,5 +87,13 @@ public TareaController(TareaRepository tareaRepository) {
         } catch (Exception e) {
             return "Ocurrió un error al intentar eliminar: " + e.getMessage();
         }
+    }
+
+    // === 5. ENDPOINT PARA EL FILTRO DE TAREAS POR MATERIA ===
+    // Coincide con la petición @GET("api/tareas/materia/{idMateria}") de Android
+    @GetMapping("/materia/{idMateria}")
+    public List<Tarea> getTareasPorMateria(@PathVariable Long idMateria) {
+        // Llamamos al método correcto del repositorio que apunta a findByMateriaIdMateria
+        return tareaRepository.findByMateriaIdMateria(idMateria);
     }
 }
